@@ -8,13 +8,13 @@ pkgdesc="tiny script runner"
 
 arch=('any')
 
-url="https://crystalsoft.neocities.org"
+url="https://github.com/J-K-Tech/tiny"
 
 license=('AGPL3')
 
 makedepends=('gcc')
 
-source=("https://github.com/J-K-Tech/${pkgname}/archive/refs/tags/${pkgver}.tar.gz")
+source=("https://github.com/J-K-Tech/tiny/archive/refs/tags/${pkgver}.tar.gz")
 
 sha256sums=('2af3bfa2937e7452f74895db7e12c60b67000dc9c2e9f1aa1e53f7e1537d2636')
 
