@@ -1,4 +1,4 @@
-pkgname=tiny
+pkgname=tiny-bin
 
 pkgver=1.0
 
