@@ -2,7 +2,6 @@
 #include <string>
 #include <fstream>
 #include <map>
-#include "term.h"
 std::string get(std::string);
 std::map<std::string,std::string> variables;
 std::map<std::string,int> functions;
