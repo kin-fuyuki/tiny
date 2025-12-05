@@ -352,10 +352,8 @@ struct TDF_FILE{
 			throw TDF_ERR(FILE_NOT_FOUND,filepath,{});
 		}
 		NULLPOINTER:
-			//tiny::fatal("NULL POINTER of selector %c",CCHAR);
 			throw TDF_ERR(NULL_POINTER,filepath,{std::string(1,CCHAR),std::to_string(INDEX)});
 		FAILTOPARSE:
-			//tiny::fatal("FAILED TO PARSE LINE %i OF FILE %s",INDEX,filepath);
 			throw TDF_ERR(FAILED_TO_PARSE,filepath,{std::to_string(INDEX)});
 		delete data;
 		data=nullptr;
@@ -373,6 +371,14 @@ struct TDF_FILE{
 			}
 			return false;
 		}
+		bool defined(std::vector<std::string>path,bool defaultval){
+			try {
+				return defined(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
+		}
 		bool getbool(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
 			for(size_t i=0;i<path.size();i++){
@@ -386,6 +392,14 @@ struct TDF_FILE{
 				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
+		}
+		bool getbool(std::vector<std::string>path,bool defaultval){
+			try {
+				return getbool(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
 		}
 		int getint(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
@@ -401,6 +415,14 @@ struct TDF_FILE{
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
 		}
+		int getint(std::vector<std::string>path,int defaultval){
+			try {
+				return getint(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
+		}
 		std::string getstring(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
 			for(size_t i=0;i<path.size();i++){
@@ -414,6 +436,14 @@ struct TDF_FILE{
 				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
+		}
+		std::string getstring(std::vector<std::string>path,std::string defaultval){
+			try {
+				return getstring(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
 		}
 		std::vector<std::string> getpointer(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
@@ -429,6 +459,14 @@ struct TDF_FILE{
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
 		}
+		std::vector<std::string> getpointer(std::vector<std::string>path,std::vector<std::string> defaultval){
+			try {
+				return getpointer(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
+		}
 		char getchar(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
 			for(size_t i=0;i<path.size();i++){
@@ -442,6 +480,14 @@ struct TDF_FILE{
 				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
+		}
+		char getchar(std::vector<std::string>path,char defaultval){
+			try {
+				return getchar(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
 		}
 		float getfloat(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
@@ -457,6 +503,14 @@ struct TDF_FILE{
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
 		}
+		float getfloat(std::vector<std::string>path,float defaultval){
+			try {
+				return getfloat(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
+		}
 		boost::unordered_map<std::string,TDF_DATA>* getclass(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
 			for(size_t i=0;i<path.size();i++){
@@ -470,6 +524,14 @@ struct TDF_FILE{
 				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
+		}
+		boost::unordered_map<std::string,TDF_DATA>* getclass(std::vector<std::string>path,boost::unordered_map<std::string,TDF_DATA>* defaultval){
+			try {
+				return getclass(path);}
+			catch(TDF_ERR e) {
+				warning((char*)e.what());
+				return defaultval;
+			}
 		}
 	
 	//set
