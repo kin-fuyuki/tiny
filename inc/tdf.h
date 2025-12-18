@@ -11,6 +11,33 @@
 #define TINYDATAFORMAT_H
 #define TINYDEFINEHEADER "0000_TDF_HEADER_DEFINE"
 #include "term.h"
+
+#define GENSTART {int LAST = trimmed.find(' ', 3);if (LAST == std::string::npos) goto FAILTOPARSE;std::string KEY = trimmed.substr(2, LAST - 2);
+#define GENEND (VALUE)};todelete.push_back(DAT.datapointer); (*current)[KEY]=DAT;break;}
+#define GENMID ); if (idx != sub.size()) goto FAILTOPARSE;}catch(const std::invalid_argument&){goto FAILTOPARSE;}TDF_DATA DAT={
+
+#define INTGENSTART GENSTART std::string sub = trimmed.substr(LAST + 1);size_t idx; int VALUE; try{ VALUE=stoi(sub, &idx,
+#define INTGENEND , new int GENEND
+
+#define SETSTART value){boost::unordered_map<std::string,TDF_DATA>*current=data;for(size_t i=0;i<path.size();i++){\
+	auto it=current->find(path[i]);if(it==current->end()){if(i==path.size()-1){TDF_DATA DAT={
+#define SETMID (value)};todelete.push_back(DAT.datapointer);(*current)[path[i]]=DAT;return;}else{\
+	boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();TDF_DATA DAT={TDF_CLASS,newmap}\
+	;todelete.push_back(DAT.datapointer);(*current)[path[i]]=DAT;current=newmap;}}else{if(i==path.size()-1){if(it->second.type!=
+#define SETEND *>(it->second.datapointer)=value;return;}if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);\
+	current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);}}}
+
+
+#define GETSTART (std::vector<std::string>path){boost::unordered_map<std::string,TDF_DATA>*current=data;for(size_t i=0;i<path.size();i++){\
+	auto it=current->find(path[i]);if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);if(i==path.size()-1){if(it->second.type!=
+#define GETMID )throw TDF_ERR(GET_MISMATCH,filepath,path);return *static_cast<
+#define GETEND *>(it->second.datapointer);}\
+	if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);}\
+	throw TDF_ERR(PATH_NOT_FOUND,filepath,path);}
+
+#define DEFAULTGET(TYPE_NAME, ACTUAL_TYPE) ACTUAL_TYPE TYPE_NAME(std::vector<std::string> path, ACTUAL_TYPE defaultval) {try { return\
+	TYPE_NAME(path); } catch (TDF_ERR &e) { warning((char*)e.what()); return defaultval; } }
+
 namespace tiny {
 enum TDF_ERROR{
 	SET_MISMATCH=1,
@@ -150,16 +177,7 @@ struct TDF_FILE{
 						CCHAR=trimmed[0];
 						switch (CCHAR) {
 							
-							case '"':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
-								std::string VALUE;
-								VALUE=trimmed.substr(LAST + 1);
-								TDF_DATA DAT = { TDF_STR, new std::string(VALUE) };
-								todelete.push_back(DAT.datapointer);
-								(*current)[KEY]=DAT;
-							break;}
+							case '"':GENSTART std::string VALUE; VALUE=trimmed.substr(LAST + 1); TDF_DATA DAT = { TDF_STR, new std::string GENEND
 							
 							
 							case 'S':{
@@ -176,113 +194,28 @@ struct TDF_FILE{
 							break;}
 							
 							
-							case '\'':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
-								if (LAST + 1 >= trimmed.size()) goto FAILTOPARSE;
-								char VALUE=trimmed.at(LAST + 1);
-								if (LAST + 2 < trimmed.size()) goto FAILTOPARSE;
-								TDF_DATA DAT = { TDF_CHAR, new char(VALUE) };
-								todelete.push_back(DAT.datapointer);
-								(*current)[KEY]=DAT;
-							break;}
+							case '\'':GENSTART if (LAST + 1 >= trimmed.size()) goto FAILTOPARSE;char VALUE=trimmed.at(LAST + 1);
+								if (LAST + 2 < trimmed.size()) goto FAILTOPARSE;TDF_DATA DAT = { TDF_CHAR, new char GENEND
 							
 							
-							case 'i':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
-								std::string sub = trimmed.substr(LAST + 1);
-								size_t idx;
-								int VALUE;
-								try{
-									VALUE=stoi(sub, &idx, 0);
-									if (idx != sub.size()) goto FAILTOPARSE;
-								}catch(std::invalid_argument&){
-									goto FAILTOPARSE;
-								}
-								TDF_DATA DAT= {TDF_INT, new int(VALUE)};
-								todelete.push_back(DAT.datapointer);
-								(*current)[KEY]=DAT;
-							break;}
+							case 'i': INTGENSTART 0 GENMID TDF_INT INTGENEND
 							
 							
-							case 'h':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
-								std::string sub = trimmed.substr(LAST + 1);
-								size_t idx;
-								int VALUE;
-								try{
-									VALUE=stoi(sub, &idx, 16);
-									if (idx != sub.size()) goto FAILTOPARSE;
-								}catch(const std::invalid_argument&){
-									goto FAILTOPARSE;
-								}
-								TDF_DATA DAT={TDF_HEX,new int(VALUE)};
-								todelete.push_back(DAT.datapointer);
-								(*current)[KEY]=DAT;
-							break;}
+							case 'h':INTGENSTART 16 GENMID TDF_HEX INTGENEND
 							
 							
-							case 'b':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
-								std::string sub = trimmed.substr(LAST + 1);
-								size_t idx;
-								int VALUE;
-								try{
-									VALUE=stoi(sub, &idx, 2);
-									if (idx != sub.size()) goto FAILTOPARSE;
-								}catch(const std::invalid_argument&){
-									goto FAILTOPARSE;
-								}
-								TDF_DATA DAT={TDF_BINARY,new int(VALUE)};
-								todelete.push_back(DAT.datapointer);
-								(*current)[KEY]=DAT;
-							break;}
+							case 'b':INTGENSTART 2 GENMID TDF_BINARY INTGENEND
 							
 							
-							case 'B':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
-								if (LAST + 1 >= trimmed.size()) goto FAILTOPARSE;
-								char c=trimmed.at(LAST + 1);
-								bool VALUE = c=='T';
-								if (LAST + 2 < trimmed.size()) goto FAILTOPARSE;
-								TDF_DATA DAT={TDF_BOOL,new bool(VALUE)};
-								todelete.push_back(DAT.datapointer);
-								(*current)[KEY]=DAT;
-							break;}
+							case 'B': GENSTART if (LAST + 1 >= trimmed.size()) goto FAILTOPARSE; char c=trimmed.at(LAST + 1);
+								bool VALUE = c=='T'; if (LAST + 2 < trimmed.size()) goto FAILTOPARSE; TDF_DATA DAT={TDF_BOOL,new bool GENEND
 							
 							
-							case 'f':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
-								std::string sub = trimmed.substr(LAST + 1);
-								size_t idx;
-								float VALUE;
-								try{
-									VALUE=stof(sub, &idx);
-									if (idx != sub.size()) goto FAILTOPARSE;
-								}catch(std::invalid_argument&){
-									goto FAILTOPARSE;
-								}
-								TDF_DATA DAT={TDF_FLOAT,new float(VALUE)};
-								todelete.push_back(DAT.datapointer);
-								(*current)[KEY]=DAT;
-							break;}
+							case 'f':GENSTART std::string sub = trimmed.substr(LAST + 1);size_t idx;float VALUE; try{VALUE=stof(sub, &idx);
+								if (idx != sub.size()) goto FAILTOPARSE;}catch(std::invalid_argument&){goto FAILTOPARSE;}TDF_DATA DAT={TDF_FLOAT,new float GENEND
 							
 							
-							case '@':{
-								int LAST = trimmed.find(' ', 3);
-								if (LAST == std::string::npos) goto FAILTOPARSE;
-								std::string KEY = trimmed.substr(2, LAST - 2);
+							case '@':GENSTART
 								std::string VALUE=trimmed.substr(LAST + 1);
 								std::vector<std::string>*ptr=new std::vector<std::string>();
 								size_t pos=0;
@@ -360,167 +293,40 @@ struct TDF_FILE{
 		return nullptr;
 	}
 	//get
+	
+		#define ITSNOT it->second.type!=
+		float getfloat GETSTART ITSNOT TDF_FLOAT GETMID float GETEND DEFAULTGET(getfloat, float)
+
+        bool getbool GETSTART ITSNOT TDF_BOOL GETMID bool GETEND DEFAULTGET(getbool, bool)
+
+		int getint GETSTART (ITSNOT TDF_INT)&&(ITSNOT TDF_HEX)&&(ITSNOT TDF_BINARY) GETMID int GETEND DEFAULTGET(getint, int)
+
+        std::string getstring GETSTART (ITSNOT TDF_STR)&&(ITSNOT TDF_BLOCK) GETMID std::string GETEND DEFAULTGET(getstring, std::string)
+
+        std::vector<std::string> getpointer GETSTART ITSNOT TDF_POINTER GETMID std::vector<std::string> GETEND DEFAULTGET(getpointer, std::vector<std::string>)
+
+        char getchar GETSTART ITSNOT TDF_CHAR GETMID char GETEND DEFAULTGET(getchar, char)
+
 		bool defined(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
+			for(size_t i=0;i<path.size();i++){auto it=current->find(path[i]);
 				if(it==current->end())return false;
 				if(i==path.size()-1)return true;
 				if(it->second.type!=TDF_CLASS)return false;
-				current=(boost::unordered_map<std::string,TDF_DATA>*)it->second.datapointer;
-			}
-			return false;
-		}
-		bool defined(std::vector<std::string>path,bool defaultval){
-			try {
-				return defined(path);}
-			catch(TDF_ERR e) {
-				warning((char*)e.what());
-				return defaultval;
-			}
-		}
-		bool getbool(std::vector<std::string>path){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-				if(i==path.size()-1){
-					if(it->second.type!=TDF_BOOL)throw TDF_ERR(GET_MISMATCH,filepath,path);
-					return *static_cast<bool*>(it->second.datapointer);
-				}
-				if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
-				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-			}
-			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-		}
-		bool getbool(std::vector<std::string>path,bool defaultval){
-			try {
-				return getbool(path);}
-			catch(TDF_ERR e) {
-				warning((char*)e.what());
-				return defaultval;
-			}
-		}
-		int getint(std::vector<std::string>path){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-				if(i==path.size()-1){
-					if((it->second.type!=TDF_INT)&&(it->second.type!=TDF_HEX)&&(it->second.type!=TDF_BINARY))throw TDF_ERR(GET_MISMATCH,filepath,path);
-					return *static_cast<int*>(it->second.datapointer);
-				}
-				if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
-				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-			}
-			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-		}
-		int getint(std::vector<std::string>path,int defaultval){
-			try {
-				return getint(path);}
-			catch(TDF_ERR e) {
-				warning((char*)e.what());
-				return defaultval;
-			}
-		}
-		std::string getstring(std::vector<std::string>path){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-				if(i==path.size()-1){
-					if((it->second.type!=TDF_STR)&&(it->second.type!=TDF_BLOCK))throw TDF_ERR(GET_MISMATCH,filepath,path);
-					return *static_cast<std::string*>(it->second.datapointer);
-				}
-				if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
-				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-			}
-			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-		}
-		std::string getstring(std::vector<std::string>path,std::string defaultval){
-			try {
-				return getstring(path);}
-			catch(TDF_ERR e) {
-				warning((char*)e.what());
-				return defaultval;
-			}
-		}
-		std::vector<std::string> getpointer(std::vector<std::string>path){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-				if(i==path.size()-1){
-					if(it->second.type!=TDF_POINTER)throw TDF_ERR(GET_MISMATCH,filepath,path);
-					return *static_cast<std::vector<std::string>*>(it->second.datapointer);
-				}
-				if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
-				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-			}
-			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-		}
-		std::vector<std::string> getpointer(std::vector<std::string>path,std::vector<std::string> defaultval){
-			try {
-				return getpointer(path);}
-			catch(TDF_ERR e) {
-				warning((char*)e.what());
-				return defaultval;
-			}
-		}
-		char getchar(std::vector<std::string>path){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-				if(i==path.size()-1){
-					if(it->second.type!=TDF_CHAR)throw TDF_ERR(GET_MISMATCH,filepath,path);
-					return *static_cast<char*>(it->second.datapointer);
-				}
-				if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
-				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-			}
-			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-		}
-		char getchar(std::vector<std::string>path,char defaultval){
-			try {
-				return getchar(path);}
-			catch(TDF_ERR e) {
-				warning((char*)e.what());
-				return defaultval;
-			}
-		}
-		float getfloat(std::vector<std::string>path){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-				if(i==path.size()-1){
-					if(it->second.type!=TDF_FLOAT)throw TDF_ERR(GET_MISMATCH,filepath,path);
-					return *static_cast<float*>(it->second.datapointer);
-				}
-				if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
-				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-			}
-			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
-		}
-		float getfloat(std::vector<std::string>path,float defaultval){
-			try {
-				return getfloat(path);}
-			catch(TDF_ERR e) {
-				warning((char*)e.what());
-				return defaultval;
-			}
-		}
+				current=(boost::unordered_map<std::string,TDF_DATA>*)it->second.datapointer;}
+			return false;}
+		DEFAULTGET(defined, bool)
+
 		boost::unordered_map<std::string,TDF_DATA>* getclass(std::vector<std::string>path){
 			boost::unordered_map<std::string,TDF_DATA>*current=data;
 			for(size_t i=0;i<path.size();i++){
 				auto it=current->find(path[i]);
 				if(it==current->end())throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
 				if(i==path.size()-1){
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
+					if(ITSNOT TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
 					return (boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
 				}
-				if(it->second.type!=TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
+				if(ITSNOT TDF_CLASS)throw TDF_ERR(GET_MISMATCH,filepath,path);
 				current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
 			}
 			throw TDF_ERR(PATH_NOT_FOUND,filepath,path);
@@ -533,197 +339,22 @@ struct TDF_FILE{
 				return defaultval;
 			}
 		}
-	
-	//set
-		void setbool(std::vector<std::string>path,bool value){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end()){
-					if(i==path.size()-1){
-						TDF_DATA DAT={TDF_BOOL,new bool(value)};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						return;
-					}else{
-						boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();
-						TDF_DATA DAT={TDF_CLASS,newmap};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						current=newmap;
-					}
-				}else{
-					if(i==path.size()-1){
-						if(it->second.type!=TDF_BOOL)throw TDF_ERR(SET_MISMATCH,filepath,path);
-						*static_cast<bool*>(it->second.datapointer)=value;
-						return;}
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);
-					current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-				}
-			}
-		}
-		void setint(std::vector<std::string>path,int value){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end()){
-					if(i==path.size()-1){
-						TDF_DATA DAT={TDF_INT,new int(value)};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						return;
-					}else{
-						boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();
-						TDF_DATA DAT={TDF_CLASS,newmap};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						current=newmap;
-					}
-				}else{
-					if(i==path.size()-1){
-						if(it->second.type!=TDF_INT)throw TDF_ERR(SET_MISMATCH,filepath,path);
-						*static_cast<int*>(it->second.datapointer)=value;
-						return;}
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);
-					current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-				}
-			}
-		}
-		void setstring(std::vector<std::string>path,std::string value){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end()){
-					if(i==path.size()-1){
-						TDF_DATA DAT={TDF_STR,new std::string(value)};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						return;
-					}else{
-						boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();
-						TDF_DATA DAT={TDF_CLASS,newmap};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						current=newmap;
-					}
-				}else{
-					if(i==path.size()-1){
-						if(it->second.type!=TDF_STR)throw TDF_ERR(SET_MISMATCH,filepath,path);
-						*static_cast<std::string*>(it->second.datapointer)=value;
-						return;}
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);
-					current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-				}
-			}
-		}
-		void setblock(std::vector<std::string>path,std::string value){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end()){
-					if(i==path.size()-1){
-						TDF_DATA DAT={TDF_BLOCK,new std::string(value)};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						return;
-					}else{
-						boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();
-						TDF_DATA DAT={TDF_CLASS,newmap};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						current=newmap;
-					}
-				}else{
-					if(i==path.size()-1){
-						if(it->second.type!=TDF_BLOCK)throw TDF_ERR(SET_MISMATCH,filepath,path);
-						*static_cast<std::string*>(it->second.datapointer)=value;
-						return;}
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);
-					current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-				}
-			}
-		}
-		void setfloat(std::vector<std::string>path,float value){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end()){
-					if(i==path.size()-1){
-						TDF_DATA DAT={TDF_FLOAT,new float(value)};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						return;
-					}else{
-						boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();
-						TDF_DATA DAT={TDF_CLASS,newmap};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						current=newmap;
-					}
-				}else{
-					if(i==path.size()-1){
-						if(it->second.type!=TDF_FLOAT)throw TDF_ERR(SET_MISMATCH,filepath,path);
-						*static_cast<float*>(it->second.datapointer)=value;
-						return;}
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);
-					current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-				}
-			}
-		}
-		void setchar(std::vector<std::string>path,char value){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end()){
-					if(i==path.size()-1){
-						TDF_DATA DAT={TDF_CHAR,new char(value)};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						return;
-					}else{
-						boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();
-						TDF_DATA DAT={TDF_CLASS,newmap};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						current=newmap;
-					}
-				}else{
-					if(i==path.size()-1){
-						if(it->second.type!=TDF_CHAR)throw TDF_ERR(SET_MISMATCH,filepath,path);
-						*static_cast<char*>(it->second.datapointer)=value;
-						return;}
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);
-					current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-				}
-			}
-		}
-		void setpointer(std::vector<std::string>path,std::vector<std::string>value){
-			boost::unordered_map<std::string,TDF_DATA>*current=data;
-			for(size_t i=0;i<path.size();i++){
-				auto it=current->find(path[i]);
-				if(it==current->end()){
-					if(i==path.size()-1){
-						TDF_DATA DAT={TDF_POINTER,new std::vector<std::string>(value)};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						return;
-					}else{
-						boost::unordered_map<std::string,TDF_DATA>*newmap=new boost::unordered_map<std::string,TDF_DATA>();
-						TDF_DATA DAT={TDF_CLASS,newmap};
-						todelete.push_back(DAT.datapointer);
-						(*current)[path[i]]=DAT;
-						current=newmap;
-					}
-				}else{
-					if(i==path.size()-1){
-						if(it->second.type!=TDF_POINTER)throw TDF_ERR(SET_MISMATCH,filepath,path);
-						*static_cast<std::vector<std::string>*>(it->second.datapointer)=value;
-						return;}
-					if(it->second.type!=TDF_CLASS)throw TDF_ERR(SET_MISMATCH,filepath,path);
-					current=(boost::unordered_map<std::string,TDF_DATA>*)(it->second.datapointer);
-				}
-			}
-		}
+//set
+
+		void setbool(std::vector<std::string>path, bool SETSTART TDF_BOOL, new bool SETMID TDF_BOOL) throw TDF_ERR(SET_MISMATCH, filepath, path); *static_cast<bool SETEND
+
+		void setint(std::vector<std::string>path, int SETSTART TDF_INT, new int SETMID TDF_INT) throw TDF_ERR(SET_MISMATCH, filepath, path); *static_cast<int SETEND
+
+		void setstring(std::vector<std::string>path, std::string SETSTART TDF_STR, new std::string SETMID TDF_STR) throw TDF_ERR(SET_MISMATCH, filepath, path); *static_cast<std::string SETEND
+
+		void setblock(std::vector<std::string>path, std::string SETSTART TDF_BLOCK, new std::string SETMID TDF_BLOCK) throw TDF_ERR(SET_MISMATCH, filepath, path); *static_cast<std::string SETEND
+
+		void setfloat(std::vector<std::string>path, float SETSTART TDF_FLOAT, new float SETMID TDF_FLOAT) throw TDF_ERR(SET_MISMATCH, filepath, path); *static_cast<float SETEND
+
+		void setchar(std::vector<std::string>path, char SETSTART TDF_CHAR, new char SETMID TDF_CHAR) throw TDF_ERR(SET_MISMATCH, filepath, path); *static_cast<char SETEND
+
+		void setpointer(std::vector<std::string>path, std::vector<std::string> SETSTART TDF_POINTER, new std::vector<std::string> SETMID TDF_POINTER) throw TDF_ERR(SET_MISMATCH, filepath, path); *static_cast<std::vector<std::string> SETEND
+
 		void define(std::vector<std::string>defines,char* name){
 			auto it = data->find(TINYDEFINEHEADER);
 			if (it == data->end() || it->second.type != TDF_DEFINES) {
@@ -759,44 +390,19 @@ struct TDF_FILE{
 		for(auto&[key,val]:*map){
 			if(key==TINYDEFINEHEADER)continue;
 			switch(val.type){
-				case TDF_STR:
-					*STR+="\" "+key+" "+*static_cast<std::string*>(val.datapointer)+"\n";
-				break;
-				case TDF_CHAR:
-					*STR+="' "+key+" "+*static_cast<char*>(val.datapointer)+"\n";
-				break;
-				case TDF_BLOCK:
-					*STR+="S "+key+"\n"+*static_cast<std::string*>(val.datapointer)+"\\\n";
-				break;
-				case TDF_BOOL:
-					*STR+="B "+key+" "+(*static_cast<bool*>(val.datapointer)?"T":"F")+"\n";
-				break;
-				case TDF_BINARY:
-					*STR+="b "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";
-				break;
-				case TDF_INT:
-					*STR+="i "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";
-				break;
-				case TDF_FLOAT:
-					*STR+="f "+key+" "+std::to_string(*static_cast<float*>(val.datapointer))+"\n";
-				break;
-				case TDF_HEX:
-					*STR+="h "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";
-				break;
-				case TDF_POINTER:{
-					std::vector<std::string>*ptr=static_cast<std::vector<std::string>*>(val.datapointer);
-					*STR+="@ "+key+" ";
-					for(size_t i=0;i<ptr->size();i++){
-						*STR+=(*ptr)[i];
-						if(i<ptr->size()-1)*STR+=".";
-					}
-					*STR+="\n";
-				break;}
-				case TDF_CLASS:
-					*STR+="{ "+key+"\n";
-					crawl((boost::unordered_map<std::string,TDF_DATA>*)(val.datapointer),STR,"");
-					*STR+="}\n";
-				break;
+				case TDF_STR:*STR+="\" "+key+" "+*static_cast<std::string*>(val.datapointer)+"\n";break;
+				case TDF_CHAR:*STR+="' "+key+" "+*static_cast<char*>(val.datapointer)+"\n";break;
+				case TDF_BLOCK:*STR+="S "+key+"\n"+*static_cast<std::string*>(val.datapointer)+"\\\n";break;
+				case TDF_BOOL:*STR+="B "+key+" "+(*static_cast<bool*>(val.datapointer)?"T":"F")+"\n";break;
+				case TDF_BINARY:*STR+="b "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";break;
+				case TDF_INT:*STR+="i "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";break;
+				case TDF_FLOAT:*STR+="f "+key+" "+std::to_string(*static_cast<float*>(val.datapointer))+"\n";break;
+				case TDF_HEX:*STR+="h "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";break;
+				
+				case TDF_POINTER:{std::vector<std::string>*ptr=static_cast<std::vector<std::string>*>(val.datapointer);
+					*STR+="@ "+key+" ";for(size_t i=0;i<ptr->size();i++){*STR+=(*ptr)[i];if(i<ptr->size()-1)*STR+=".";}*STR+="\n";break;}
+				
+				case TDF_CLASS:*STR+="{ "+key+"\n";crawl((boost::unordered_map<std::string,TDF_DATA>*)(val.datapointer),STR,"");*STR+="}\n";break;
 			}
 		}
 	}
