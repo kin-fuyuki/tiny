@@ -392,7 +392,7 @@ struct TDF_FILE{
 			switch(val.type){
 				case TDF_STR:*STR+="\" "+key+" "+*static_cast<std::string*>(val.datapointer)+"\n";break;
 				case TDF_CHAR:*STR+="' "+key+" "+*static_cast<char*>(val.datapointer)+"\n";break;
-				case TDF_BLOCK:*STR+="S "+key+"\n"+*static_cast<std::string*>(val.datapointer)+"\\\n";break;
+				case TDF_BLOCK:*STR+="S "+key+"\n"+*static_cast<std::string*>(val.datapointer)+"\n\\\n";break;
 				case TDF_BOOL:*STR+="B "+key+" "+(*static_cast<bool*>(val.datapointer)?"T":"F")+"\n";break;
 				case TDF_BINARY:*STR+="b "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";break;
 				case TDF_INT:*STR+="i "+key+" "+std::to_string(*static_cast<int*>(val.datapointer))+"\n";break;
